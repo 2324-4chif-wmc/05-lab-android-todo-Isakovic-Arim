@@ -47,7 +47,7 @@ class MainView @Inject constructor() {
                 modifier = Modifier.fillMaxSize(),
                 color = MaterialTheme.colorScheme.background
             ) {
-                Todos(model = viewModel, modifier = Modifier.padding(all = 32.dp))
+                Todos(viewModel, modifier = Modifier.padding(all = 32.dp))
             }
         }
     }
