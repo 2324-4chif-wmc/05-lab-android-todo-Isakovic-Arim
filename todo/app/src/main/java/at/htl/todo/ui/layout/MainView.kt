@@ -1,8 +1,6 @@
 package at.htl.todo.ui.layout
 
 import androidx.activity.ComponentActivity
-import androidx.activity.compose.setContent
-import androidx.activity.enableEdgeToEdge
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
@@ -19,11 +17,13 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.rxjava3.subscribeAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.ComposeView
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import at.htl.todo.model.Model
 import at.htl.todo.model.ModelStore
 import at.htl.todo.model.Todo
+import at.htl.todo.model.TodoService
 import at.htl.todo.ui.theme.TodoTheme
 import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers
 import javax.inject.Inject
@@ -35,21 +35,20 @@ class MainView @Inject constructor() {
     @Inject
     lateinit var store: ModelStore
 
+    @Inject
+    lateinit var todoService: TodoService
+
     fun buildContent(activity: ComponentActivity) {
-        activity.enableEdgeToEdge()
-        activity.setContent {
-            val viewModel = store
-                .pipe
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribeAsState(initial = Model())
-                .value
+        val view = ComposeView(activity)
+        view.setContent {
+            val viewModel = store.pipe.observeOn(AndroidSchedulers.mainThread()).subscribeAsState(initial = Model()).value
             Surface(
-                modifier = Modifier.fillMaxSize(),
-                color = MaterialTheme.colorScheme.background
+                modifier = Modifier.fillMaxSize()
             ) {
-                Todos(viewModel, modifier = Modifier.padding(all = 32.dp))
+                TabScreen(viewModel, store, todoService)
             }
         }
+        activity.setContentView(view)
     }
 }
 
