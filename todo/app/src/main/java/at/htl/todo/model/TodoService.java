@@ -31,4 +31,13 @@ public class TodoService {
                     return null;
                 });
     }
+
+    public void create(Todo todo) {
+        CompletableFuture
+                .supplyAsync(() -> todoClient.create(todo))
+                .exceptionally((e) -> {
+                    Log.e(TAG, "Error creating a todo", e);
+                    return null;
+                });
+    }
 }
